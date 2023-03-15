@@ -1,7 +1,9 @@
-import React from 'react'
+import {createStore,applyMiddleware,combineReducers} from "redux"
+import thunk from "redux-thunk"
+import authreducer from "./auth/authreducer"
 
-export default function store() {
-  return (
-    <div>store</div>
-  )
-}
+const combinedreducer=combineReducers({
+    authred:authreducer
+})
+const store=createStore(combinedreducer,applyMiddleware(thunk))
+export default store;
