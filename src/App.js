@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import React from 'react';
 import {
   ChakraProvider,
@@ -36,6 +37,16 @@ function App() {
         </Grid>
       </Box>
     </ChakraProvider>
+=======
+import './App.css';
+import { Router } from './routes/Allroutes';
+
+function App() {
+  return (
+    <div className="App">
+      <Router />
+    </div>
+>>>>>>> Stashed changes
   );
 }
 
