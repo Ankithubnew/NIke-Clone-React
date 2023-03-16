@@ -1,4 +1,4 @@
-import { Center, Icon, Text, useColorMode, Box} from "@chakra-ui/react";
+import { Center, Icon, Text, useColorMode, Box,Input } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { AiOutlineSearch} from 'react-icons/ai';
 
@@ -10,6 +10,7 @@ export const Category = ({ text, link, handlePath, name }) => {
             h={'60px'}
             cursor={'pointer'}
             paddingX={'15px'}
+            marginX={'10px'}
             _hover={{ borderBottom: `2px solid ${colorMode === 'light' ? 'black' : 'white'}` }}
         >
             <Link
@@ -57,17 +58,25 @@ export const SearchBox = () => {
         <Center>
             <Box
                 borderRadius={50}
-                w={'180px'}
+                w={'140px'}
                 color={'#ced2d6'}
                 bg={'#f5f5f5'}
                 textAlign={'left'}
-                p={'7px'}
+                p={'4x,10px,3px,9px'}
                 _hover={{ bg: '#ececec', color: 'black' }}
                 cursor={'text'}
             >
                 <Center justifyContent={'left'} >
                     <NavIcon iconName={AiOutlineSearch} />
-                    <Text fontSize={'17px'}>Search</Text>
+                    <Input  placeholder='Search'
+                        style={{
+                            border: 'none',
+                            outline: 'none',
+                            boxShadow: 'none',
+                        }}
+                        _focus={{
+                            border: '1px solid gray',
+                        }} />
                 </Center>
             </Box>
         </Center>

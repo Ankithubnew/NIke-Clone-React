@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { nikeLogo } from "./constants/images";
 
-import { Category, NavIcon } from "./navbar/CategoryAndIcon";
+import { Category, NavIcon,SearchBox } from "./navbar/CategoryAndIcon";
 import { SideDrawer } from "./navbar/SideDrawer";
 
 
@@ -79,7 +79,7 @@ export const Navbar = () => {
         <Box display={["none", "none", "flex", "flex", "flex"]}>
           <Category
             name={"/"}
-            text={"Home"}
+            text={"New & Featured"}
             link={"/"}
           />
           <Category
@@ -109,6 +109,10 @@ export const Navbar = () => {
         </Box>
 
         <Spacer />
+
+        <Center position={"relative"} mr={"10px"}>
+          <SearchBox/>
+        </Center>
 
         <Center position={"relative"} mr={"10px"}>
           <Link to={"/favourite"}>
@@ -148,7 +152,7 @@ export const Navbar = () => {
         </Box>
       </Flex>
 
-      <Box h={["10px", "20px", "30px", "40px", "40px"]}></Box>
+      <Box h={["10px", "10px", "10px", "10px", "10px"]}></Box>
     </>
   );
 };
