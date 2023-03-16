@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { Box,Select,RadioGroup,Radio,Icon, Button,FormHelperText, Center, Checkbox, FormControl, Heading, HStack, Image, Input, Stack, Text, VStack, ButtonGroup, InputGroup, InputRightElement } from '@chakra-ui/react'
+import { Box,Select,RadioGroup,Radio,Icon, Button,FormHelperText, Center, Checkbox, FormControl, Heading, HStack, Image, Input, Stack, Text, VStack, ButtonGroup, InputGroup, InputRightElement,FormErrorMessage } from '@chakra-ui/react'
 import {CheckIcon, EmailIcon,ViewIcon,ViewOffIcon} from "@chakra-ui/icons"
 import {Link, useNavigate} from "react-router-dom"
 
@@ -12,6 +12,15 @@ export default function Signup() {
     dob:"",
     country:"",
     gender:""
+  })
+  const [error,setError]=useState({
+    email:"true",
+    password:"true",
+    fname:"true",
+    lname:"true",
+    dob:"true",
+    country:"true",
+    gender:"true"
   })
   const [button,setButton]=useState("");
   const sbtnRef=useRef(null)
@@ -27,8 +36,15 @@ export default function Signup() {
     setShowPassword(!showPassword);
   };
   const handleChange=(e)=>{
+    if(e.target.name==="email"){
+      const eregex=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      setError({...error,[e.target.name]:eregex.test(e.target.value)})
+    }else if(e.target.name==="password"){
+      const pregex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d|\W)[a-zA-Z\d\W]{8,}$/g;
+      setError({...error,[e.target.name]:pregex.test(e.target.value)})
+    }
     setInput({...input,[e.target.name]:e.target.value})
-   
+    // console.log(input);
   }
   const handleSubmit=(e)=>{
     e.preventDefault();
@@ -57,20 +73,29 @@ export default function Signup() {
       <form  onSubmit={handleSubmit}>
           <FormControl mt={5} mb={4} isInvalid={false}>
             <Stack spacing={4} >
-            <Input type="email" size="md" onChange={handleChange}  name='email' placeholder='Email address' />
-            <InputGroup>
-            <Input type={buttonType} size="md" onChange={handleChange} name='password' placeholder='Password' />
-            <InputRightElement>
-            <Button
-              size="sm"
-              onClick={handleViewPasswordClick}
-              variant="ghost"
-              _focus={{ boxShadow: "none" }}
-            >
-              {input.password!=="" ? showPassword ? <ViewOffIcon /> : <ViewIcon />:""}
-            </Button>
-            </InputRightElement>
-            </InputGroup>
+            <FormControl isInvalid={!error.email}>
+              <Input type="email" size="md" onChange={handleChange}  name='email' placeholder='Email address' />
+              {!error.email ? <FormErrorMessage>Please enter a valid email address</FormErrorMessage>:""}
+              </FormControl>
+              <FormControl isInvalid={!error.password}>
+              <InputGroup>
+              <Input type={buttonType} size="md" onChange={handleChange} name='password' placeholder='Password' />
+              <InputRightElement>
+              <Button
+                size="sm"
+                onClick={handleViewPasswordClick}
+                variant="ghost"
+                _focus={{ boxShadow: "none" }}
+              >
+                {input.password!=="" ? showPassword ? <ViewOffIcon /> : <ViewIcon />:""}
+              </Button>
+              </InputRightElement>
+              </InputGroup>
+                <FormErrorMessage>Password does not meet minimum requirements.</FormErrorMessage>
+                {!error.password?<FormHelperText>Minimum of 8 characters 1 uppercase letter</FormHelperText>:""}
+                {!error.password?<FormHelperText>1 lowercase letter 1 number</FormHelperText>:""}
+              {/* <Input type="password" size="md" onChange={handleChange}  name='password' placeholder='Password' /> */}
+              </FormControl>
             <Input type="text" size="md" onChange={handleChange} name='fname' placeholder='First Name' />
             <Input type="text" size="md" onChange={handleChange} name='lname' placeholder='Last Name' />
             <Input type="text" onClick={(e)=>{e.target.type="date"}} size="md" onChange={handleChange} name='dob' placeholder='Date of Birth' />
@@ -340,7 +365,7 @@ export default function Signup() {
             </Stack>
           </FormControl>
       </form>
-      <Text mt={8} align="center" style={{fontSize:"13px",lineHeight:"14px",color:"#8d8d8d"}}>Not a Member ?<Link to="/signup"><Text as='u' style={{color:"black"}}  >Join Us</Text></Link> </Text>
+      <Text mt={8} align="center" style={{fontSize:"13px",lineHeight:"14px",color:"#8d8d8d"}}>Already a Member?<Link to="/login"><Text as='u' style={{color:"black"}}  >Sign In</Text></Link> </Text>
       </Stack>
       </Center>
     </Box>

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { Box, Button, Center, Checkbox, FormControl, Heading, HStack, Image, Input, Stack, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Center, Checkbox, FormControl, FormErrorMessage, FormHelperText, Heading, HStack, Image, Input, Stack, Text, VStack } from '@chakra-ui/react'
 import {Link, useNavigate} from "react-router-dom"
 
 export default function Login() {
@@ -7,11 +7,28 @@ export default function Login() {
     email:"",
     password:""
   })
+  const [eemail,setEemail]=useState(true)
+  const [epwd,setEpwd]=useState(true)
   const sbtnRef=useRef(null)
   const navigate=useNavigate();
   const handleChange=(e)=>{
+    if(e.target.name==="email"){
+      const eregex=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      setEemail(eregex.test(e.target.value))
+    }else if(e.target.name==="password"){
+      const pregex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d|\W)[a-zA-Z\d\W]{8,}$/g;
+      setEpwd(pregex.test(e.target.value))
+    }
     setInput({...input,[e.target.name]:e.target.value})
     // console.log(input);
+  }
+  // const handlepwdChange=(e)=>{
+  //   setInput({...input,[e.target.name]:e.target.value})
+  //   setEpwd(validateP(e.target.value))
+  // }
+  const validateP=(password)=>{
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d|\W)[a-zA-Z\d\W]{8,}$/g;
+    return regex.test(password);
   }
   const handleSubmit=(e)=>{
     e.preventDefault();
@@ -38,8 +55,17 @@ export default function Login() {
       <form  onSubmit={handleSubmit}>
           <FormControl mt={5} mb={4}>
             <Stack spacing={4} >
-            <Input type="email" size="md" onChange={handleChange}  name='email' placeholder='Email address' />
-            <Input type="password" size="md" onChange={handleChange} name='password' placeholder='Password' />
+              <FormControl isInvalid={!eemail}>
+              <Input type="email" size="md" onChange={handleChange}  name='email' placeholder='Email address' />
+              {!eemail ? <FormErrorMessage>Please enter a valid email address</FormErrorMessage>:""}
+              </FormControl>
+              <FormControl isInvalid={!epwd}>
+              <Input type="password" size="md" onChange={handleChange}  name='password' placeholder='Password' />
+                <FormErrorMessage>Please enter a valid Password</FormErrorMessage>
+                {!epwd?<FormHelperText>Minimum of 8 characters 1 uppercase letter</FormHelperText>:""}
+                {!epwd?<FormHelperText>1 lowercase letter 1 number</FormHelperText>:""}
+              </FormControl>
+            
             <HStack justify="space-between" style={{marginTop:"30px"}} >
             <Checkbox colorScheme="gray" defaultChecked><Text style={{fontSize:"13px",lineHeight:"14px",color:"#8d8d8d"}} as="p" >Keep me signed in</Text></Checkbox>
             <Text style={{fontSize:"13px",lineHeight:"14px",color:"#bcbcbc"}} as="p">Forgotten your password?</Text>
