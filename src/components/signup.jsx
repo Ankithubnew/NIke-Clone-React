@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
-import { Box,Select,RadioGroup,Radio,Icon, Button,FormHelperText, Center, Checkbox, FormControl, Heading, HStack, Image, Input, Stack, Text, VStack, ButtonGroup } from '@chakra-ui/react'
-import {CheckIcon, EmailIcon} from "@chakra-ui/icons"
-import {Link} from "react-router-dom"
+import React, { useRef, useState } from 'react'
+import { Box,Select,RadioGroup,Radio,Icon, Button,FormHelperText, Center, Checkbox, FormControl, Heading, HStack, Image, Input, Stack, Text, VStack, ButtonGroup, InputGroup, InputRightElement } from '@chakra-ui/react'
+import {CheckIcon, EmailIcon,ViewIcon,ViewOffIcon} from "@chakra-ui/icons"
+import {Link, useNavigate} from "react-router-dom"
 
 export default function Signup() {
   const [input,setInput]=useState({
@@ -13,11 +13,19 @@ export default function Signup() {
     country:"",
     gender:""
   })
-  const [button,setButton]=useState("")
-  const handleButton=(e,buttonname)=>{
-    setButton(buttonname)
-    // setInput({...input,[e.target.name]:e.target.value})
-  }
+  const [button,setButton]=useState("");
+  const sbtnRef=useRef(null)
+  const [buttonType, setButtonType] = useState("password");
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate=useNavigate();
+  const handleViewPasswordClick = () => {
+    if (showPassword) {
+      setButtonType("password");
+    } else {
+      setButtonType("text");
+    }
+    setShowPassword(!showPassword);
+  };
   const handleChange=(e)=>{
     setInput({...input,[e.target.name]:e.target.value})
    
@@ -25,6 +33,11 @@ export default function Signup() {
   const handleSubmit=(e)=>{
     e.preventDefault();
     console.log(input);
+    sbtnRef.current.textContent = "PROCESSING...";
+    setTimeout(()=>{
+      sbtnRef.current.textContent="JOIN US"
+      navigate("/login")
+    },2000)
 
   }
   return (
@@ -41,12 +54,23 @@ export default function Signup() {
             <Text   style={{fontSize:"14px",lineHeight:"22px",color:"#8d8d8d"}} >and community.</Text>
             </VStack>
       </VStack>
-      {console.log(button)}
       <form  onSubmit={handleSubmit}>
-          <FormControl mt={5} mb={4}>
+          <FormControl mt={5} mb={4} isInvalid={false}>
             <Stack spacing={4} >
             <Input type="email" size="md" onChange={handleChange}  name='email' placeholder='Email address' />
-            <Input type="password" size="md" onChange={handleChange} name='password' placeholder='Password' />
+            <InputGroup>
+            <Input type={buttonType} size="md" onChange={handleChange} name='password' placeholder='Password' />
+            <InputRightElement>
+            <Button
+              size="sm"
+              onClick={handleViewPasswordClick}
+              variant="ghost"
+              _focus={{ boxShadow: "none" }}
+            >
+              {input.password!=="" ? showPassword ? <ViewOffIcon /> : <ViewIcon />:""}
+            </Button>
+            </InputRightElement>
+            </InputGroup>
             <Input type="text" size="md" onChange={handleChange} name='fname' placeholder='First Name' />
             <Input type="text" size="md" onChange={handleChange} name='lname' placeholder='Last Name' />
             <Input type="text" onClick={(e)=>{e.target.type="date"}} size="md" onChange={handleChange} name='dob' placeholder='Date of Birth' />
@@ -311,7 +335,7 @@ export default function Signup() {
             <Text ml={5} mr={5}  style={{fontSize:"13px",lineHeight:"14px",color:"#8d8d8d"}} as="p" >By creating an account, you agree to Nike's <Text as='u'>Privacy Policy</Text></Text>
             <Text ml={5} mr={5}  style={{fontSize:"13px",lineHeight:"14px",color:"#8d8d8d"}}  >and <Text as="u" >Terms of Use.</Text></Text>
             </VStack>
-            <Button type='submit' style={{backgroundColor:"black",color:"white"}} variant='solid'>JOIN US</Button>
+            <Button ref={sbtnRef} type='submit' style={{backgroundColor:"black",color:"white"}} variant='solid'>JOIN US</Button>
             
             </Stack>
           </FormControl>

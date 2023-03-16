@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Box, Button, Center, Checkbox, FormControl, Heading, HStack, Image, Input, Stack, Text, VStack } from '@chakra-ui/react'
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 
 export default function Login() {
   const [input,setInput]=useState({
     email:"",
     password:""
   })
+  const sbtnRef=useRef(null)
+  const navigate=useNavigate();
   const handleChange=(e)=>{
     setInput({...input,[e.target.name]:e.target.value})
     // console.log(input);
@@ -14,6 +16,12 @@ export default function Login() {
   const handleSubmit=(e)=>{
     e.preventDefault();
     console.log(input);
+    sbtnRef.current.textContent="PROCESSING..."
+    setTimeout(()=>{
+      sbtnRef.current.textContent="SIGN IN"
+      navigate("/")
+
+    },2000)
 
   }
   return (
@@ -40,7 +48,7 @@ export default function Login() {
             <Text ml={5} mr={5}  style={{fontSize:"13px",lineHeight:"14px",color:"#8d8d8d"}} as="p" >By logging in, you agree to Nike's <Text as='u'>Privacy Policy</Text> and</Text>
             <Text ml={5} mr={5}  style={{fontSize:"13px",lineHeight:"14px",color:"#8d8d8d"}} as="u" >Terms of Use.</Text>
             </VStack>
-            <Button type='submit' style={{backgroundColor:"black",color:"white"}} variant='solid'>SIGN IN</Button>
+            <Button ref={sbtnRef} type='submit' style={{backgroundColor:"black",color:"white"}} variant='solid'>SIGN IN</Button>
             
             </Stack>
           </FormControl>
