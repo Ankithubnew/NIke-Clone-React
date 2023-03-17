@@ -2,6 +2,7 @@ import { useSelector,useDispatch } from "react-redux"
 import { Card, Stack,Text,Image,Heading,CardHeader, CardBody, CardFooter,Link } from '@chakra-ui/react'
 import { useParams } from "react-router-dom";
 import { getData } from "../redux/prod/action";
+import { useEffect } from "react";
 
 function ProductDiscription(){
     const dispatch =useDispatch();
@@ -11,23 +12,28 @@ function ProductDiscription(){
         return storeData.productReducer.shoes
     })
     console.log("id",id)
-    console.log(fullData)
+    console.log( "fullData",fullData)
 
-    //  useEffect(()=>{
-    // dispatch(getData(id))
-    //  },[])
+
+    let Data=fullData.filter((ele,i)=>ele.id==id)
+    console.log("Data",Data)
+   useEffect(()=>{
+    dispatch(getData(id))
    
+   },[])
+    
    
     return(
         <div>
-            <h1>{fullData.Price}</h1>
+          {/* <h1>{fullData.Price}</h1> */}
 
 
 
 
-    {/* {fullData.map((ele,i)=>{
-
-<Card
+     {/* {fullData.map((ele,i)=>{ */}
+     {Data.map((ele,i)=>{
+      return <div>
+      <Card
 direction={{ base: 'column', sm: 'row' }}
 overflow='hidden'
 variant='outline'
@@ -71,8 +77,13 @@ variant='outline'
   </CardFooter>
 </Stack>
 </Card>
-            })}
-     */}
+      </div>
+     })}
+   
+
+
+         
+     
 
 
 
