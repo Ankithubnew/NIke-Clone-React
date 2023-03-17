@@ -38,8 +38,8 @@ function App() {
           </VStack>
         </Grid>
       </Box> */}
-      {/* <Login/> */}
-      <Signup/>
+      <Login/>
+      {/* <Signup/> */}
     </ChakraProvider>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { Box, Button, Center, Checkbox, FormControl, FormErrorMessage, FormHelperText, Heading, HStack, Image, Input, Stack, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Center,Alert,AlertIcon, Checkbox, FormControl, FormErrorMessage, FormHelperText, Heading, HStack, Image, Input, Stack, Text, VStack } from '@chakra-ui/react'
 import {Link, useNavigate} from "react-router-dom"
 
 export default function Login() {
@@ -7,6 +7,7 @@ export default function Login() {
     email:"",
     password:""
   })
+  const [e,setE]=useState(false);
   const [eemail,setEemail]=useState(true)
   const [epwd,setEpwd]=useState(true)
   const sbtnRef=useRef(null)
@@ -33,13 +34,28 @@ export default function Login() {
   const handleSubmit=(e)=>{
     e.preventDefault();
     console.log(input);
-    sbtnRef.current.textContent="PROCESSING..."
-    setTimeout(()=>{
-      sbtnRef.current.textContent="SIGN IN"
-      navigate("/")
+    if(input.email===""){
+      setEemail(false)
+    }else if(input.password===""){
+      setEpwd(false)
+    }else{
+      const users=JSON.parse(localStorage.getItem("nikecred"))||[];
+      const auth=users.filter((e)=>{
+        return e.email===input.email&&e.password===input.password;
+      })
+      if(auth[0]){
+        sbtnRef.current.textContent="PROCESSING..."
+        setE(false)
+        console.log(auth);
+        setTimeout(()=>{
+          sbtnRef.current.textContent="SIGN IN"
+          navigate("/")
+        },2000)
 
-    },2000)
-
+      }else{
+        setE(true)
+      }
+    }
   }
   return (
     <Box style={{fontFamily:"Helvetica",marginTop:"50px"}}>
@@ -55,6 +71,9 @@ export default function Login() {
       <form  onSubmit={handleSubmit}>
           <FormControl mt={5} mb={4}>
             <Stack spacing={4} >
+              {e?<Alert status='error'>
+                <AlertIcon />
+                Your email or password was entered incorrectly</Alert>:""}
               <FormControl isInvalid={!eemail}>
               <Input type="email" size="md" onChange={handleChange}  name='email' placeholder='Email address' />
               {!eemail ? <FormErrorMessage>Please enter a valid email address</FormErrorMessage>:""}

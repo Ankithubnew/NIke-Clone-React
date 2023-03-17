@@ -27,10 +27,10 @@ export default function Signup() {
   const [buttonType, setButtonType] = useState("password");
   const [showPassword, setShowPassword] = useState(false);
   const navigate=useNavigate();
-  const handleViewPasswordClick = () => {
-    if (showPassword) {
+  const handleViewPasswordClick=()=>{
+    if(showPassword){
       setButtonType("password");
-    } else {
+    }else{
       setButtonType("text");
     }
     setShowPassword(!showPassword);
@@ -42,6 +42,16 @@ export default function Signup() {
     }else if(e.target.name==="password"){
       const pregex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d|\W)[a-zA-Z\d\W]{8,}$/g;
       setError({...error,[e.target.name]:pregex.test(e.target.value)})
+    }else if(e.target.name==="fname"){
+      const fregex=/^[a-zA-Z]{3,}$/;
+      setError({...error,[e.target.name]:fregex.test(e.target.value)})
+    }else if(e.target.name==="lname"){
+      const lregex=/^[a-zA-Z]{2,}$/;
+      setError({...error,[e.target.name]:lregex.test(e.target.value)})
+    }else  if(e.target.name==="dob"){
+      setError({...error,[e.target.name]:e.target.value!==""})
+    }else if(e.target.name==="gender"){
+      setError({...error,[e.target.name]:e.target.value!==""})
     }
     setInput({...input,[e.target.name]:e.target.value})
     // console.log(input);
@@ -49,12 +59,31 @@ export default function Signup() {
   const handleSubmit=(e)=>{
     e.preventDefault();
     console.log(input);
-    sbtnRef.current.textContent = "PROCESSING...";
-    setTimeout(()=>{
-      sbtnRef.current.textContent="JOIN US"
-      navigate("/login")
-    },2000)
-
+    // sbtnRef.current.textContent = "PROCESSING...";
+    if(input.email===""){
+      setError({...error,email:false})
+    }else if(input.password===""){
+      setError({...error,password:false})
+    }else if(input.fname===""){
+      setError({...error,fname:false})
+    }else if(input.lname===""){
+      setError({...error,lname:false})
+    }else if(input.dob===""){
+      setError({...error,dob:false})
+    }else if(input.gender===""){
+      // setError({...error,gender:false})
+    }else{
+      console.log("sucess")
+      sbtnRef.current.textContent = "PROCESSING...";
+      const users=JSON.parse(localStorage.getItem("nikecred"))||[];
+      users.push(input)
+      localStorage.setItem("nikecred",JSON.stringify(users));
+      
+      setTimeout(()=>{
+        sbtnRef.current.textContent="JOIN US"
+        navigate("/login")
+      },2000)
+    }
   }
   return (
     <Box style={{fontFamily:"Helvetica",marginTop:"50px"}}>
@@ -62,7 +91,8 @@ export default function Signup() {
       <Stack>
       <VStack as="header"  mt={8}>
         <Image boxSize="44px" h="17px" mb={4}  src='https://s3.nikecdn.com/unite/app/953/images/swoosh_black_2x.png' />
-        {/* <Box maxW='350px'><Heading as="h1" mt="0" >YOUR ACCOUNT  FOR EVERYTHING NIKE</Heading></Box> */}
+        {/*  */}
+        {/* {console.log(!error.email)} */}
         <Heading style={{fontSize:"26px",lineHeight:"26px",fontWeight:"700"}} as="h1" mb="0" mt={4}  >BECOME A NIKE MEMBER</Heading>
         <VStack spacing={0} style={{marginBottom:"10px",marginTop:"30px"}} >
             <Text ml={5} mr={5}  style={{fontSize:"14px",lineHeight:"22px",color:"#8d8d8d"}} as="p" >Create your Nike Member profile and get first</Text>
@@ -96,9 +126,18 @@ export default function Signup() {
                 {!error.password?<FormHelperText>1 lowercase letter 1 number</FormHelperText>:""}
               {/* <Input type="password" size="md" onChange={handleChange}  name='password' placeholder='Password' /> */}
               </FormControl>
+              <FormControl isInvalid={!error.fname}>
             <Input type="text" size="md" onChange={handleChange} name='fname' placeholder='First Name' />
+            {!error.fname ? <FormErrorMessage>Please enter a valid first name</FormErrorMessage>:""}
+            </FormControl>
+            <FormControl isInvalid={!error.lname}>
             <Input type="text" size="md" onChange={handleChange} name='lname' placeholder='Last Name' />
+              {!error.lname ? <FormErrorMessage>Please enter a valid last name.</FormErrorMessage>:""}
+            </FormControl>
+            <FormControl isInvalid={!error.dob}>
             <Input type="text" onClick={(e)=>{e.target.type="date"}} size="md" onChange={handleChange} name='dob' placeholder='Date of Birth' />
+              {!error.dob ? <FormErrorMessage>Please enter a valid date of birth.</FormErrorMessage>:""}
+            </FormControl>
             <Select name='country' defaultValue="IN" onChange={handleChange} placeholder='Country/Region'>
             <option value="AF" >Afghanistan</option>
             <option value="AL" >Albania</option>
@@ -341,13 +380,15 @@ export default function Signup() {
             <option value="ZW" >Zimbabwe</option>
             </Select>
             <FormHelperText><Text style={{fontSize:"13px",lineHeight:"14px",color:"#8d8d8d",marginLeft:"30px"}}>Get a Nike Member Reward every year on your Birthday.</Text></FormHelperText>
-            
+            <FormControl isInvalid={!error.gender}>
               <ButtonGroup variant='outline'  justify="space-between" spacing={6}>
                 <Button w={180} name="gender"  border={button==="male"?"1px solid black":"1px solid #e7e7e7"} leftIcon={button==="male"?<CheckIcon/>:""}  onClick={(e)=>{setInput({...input,[e.target.name]:e.target.value})
                 setButton("male")}} value="male"  size="md">Male</Button>
                 <Button w={180} name="gender" border={button==="female"?"1px solid black":"1px solid #e7e7e7"} leftIcon={button==="female"?<CheckIcon/>:""} onClick={(e)=>{setInput({...input,[e.target.name]:e.target.value})
                 setButton("female")}} value="female" size="md">Female</Button>
               </ButtonGroup>
+              {!error.gender ? <FormErrorMessage>Please select a preference.</FormErrorMessage>:""}
+            </FormControl>
             <HStack  style={{marginTop:"30px"}} >
             <Checkbox colorScheme="gray" size="lg" >
               <VStack spacing={0}  >
@@ -361,7 +402,6 @@ export default function Signup() {
             <Text ml={5} mr={5}  style={{fontSize:"13px",lineHeight:"14px",color:"#8d8d8d"}}  >and <Text as="u" >Terms of Use.</Text></Text>
             </VStack>
             <Button ref={sbtnRef} type='submit' style={{backgroundColor:"black",color:"white"}} variant='solid'>JOIN US</Button>
-            
             </Stack>
           </FormControl>
       </form>
